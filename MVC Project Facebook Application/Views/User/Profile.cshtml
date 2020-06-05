@@ -1,0 +1,391 @@
+﻿
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/layout.cshtml";
+}
+
+@model IEnumerable<MVC_Project_Facebook_Application.Core.Domain.Post>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <link href="bootstrap4/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="~/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+
+
+    <!------------------Two Modals For View All Friends and All Friend Requests----------------------------->
+
+    <div class="modal fade" id="ShowFriendsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">All Friends</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body ShowFriends">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ShowRequestsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">All Friend Requests</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body ShowRequests">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-------------------------------------------------------------------------------------------------->
+    <!------------------FriendShip Button With Profile Photo And Create Post---------------------------->
+    <div class="row col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+        <!-----------------------------Profile Photo--------------------------------------->
+        <div class="col-sm-4 col-md-4 col-lg-3 col-xl-3 hhh">
+            <div id="ProfilePhotoSection">
+                <h3>@ViewBag.User.FirstName @ViewBag.User.LastName</h3>
+
+                <!-- #region Profile Picture Upload -->
+
+                @if (ViewBag.User.ProfilePicture == null)
+                {
+                    <img src="~/unknown.jpg" height="150" width="150" class="img-fluid" />
+                }
+                else
+                {
+                    <img id="targetUpdatedImage" src="data:image/*;base64,@Convert.ToBase64String(ViewBag?.User.ProfilePicture)" height="150" width="150" class="img-fluid" />
+                }
+                @if (ViewBag.UserIDSession == ViewBag.User.Id)
+                {
+                    <form asp-action="EditPhoto" enctype="multipart/form-data" method="post" class="mt-2">
+                        <label class="form-control text-center" for="img">Select image</label>
+                        <input class="form-control" type="file" id="img" name="img" accept="image/*">
+                        <input class="btn btn-dark text-center" type="submit" value="Submit Image" id="btnsubmitphoto">
+                    </form>
+                }
+
+                <!-- #endregion -->
+
+            </div>
+        </div>
+
+        <!------------------------------------------------------------------------------------->
+        <!---------------------FriendShip Button With Create Post------------------------>
+        <div class="col-sm-8 col-md-8 col-lg-9 col-xl-9">
+            <!-------------------------------------FriendShip Button--------------------->
+            @{
+                if (ViewBag.FriendShipState != null)
+                {
+                    <div class="row offset-sm-5 col-sm-3 offset-md-5 col-md-3 offset-lg-6 col-lg-3 offset-xl-6 col-xl-3" id="FriendShipState">
+                        @switch (ViewBag.FriendShipState)
+                        {
+                            case "isFriend":
+                                <button data-user-id=@ViewBag.ProfileUser.Id class="btn alert-danger js-RemoveFriend">UnFriend</button>
+                                @*@Html.ActionLink("UnFriend", "RemoveFriend", "User", new {FriendID = item.UserID}, new { @class="btn btn-light" +item.UserID})*@
+                                break;
+                            case "notFriend":
+                                if (ViewBag.ProfileUser.Id != ViewBag.UserIDSession)
+                                {
+                                    <button data-user-id=@ViewBag.ProfileUser.Id class="btn alert-primary js-AddFriend">Add Friend</button>
+                                }
+                                break;
+                            case "receivedFriendRequest":
+                                <button data-user-id=@ViewBag.ProfileUser.Id class="btn alert-success js-AcceptRequest">Accept</button>
+                                <hr />
+                                <button data-user-id=@ViewBag.ProfileUser.Id class="btn alert-warning js-DeclineRequest">Decline</button>
+
+                                break;
+                            case "sentFriendRequest":
+                                if (ViewBag.ProfileUser.Id != ViewBag.UserIDSession)
+                                {
+                                    <button data-user-id=@ViewBag.ProfileUser.Id class="btn alert-secondary js-DeleteRequest">Delete Request</button>
+                                }
+                                break;
+
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="row offset-sm-5 col-sm-3 offset-md-5 col-md-3 offset-lg-6 col-lg-3 offset-xl-6 col-xl-3">
+                        <button class="btn btn-primary disabled d-none">Profile</button>
+                    </div>
+                 }
+              }
+
+
+                        <!----------------------------------------------------------------->
+                        <!----------------------------Create Post Section--------------------------------->
+                        @if (ViewBag.UserIDSession == ViewBag.User.Id)
+                        {
+                            <div class="row col-sm-12 col-md-12 col-lg-12 col-xl-12 pt-5 mt-5">
+                                <div class="form-group newPost col-sm-12 offset-md-1 col-md-10 mr-md-1  mt-lg-5 mr-lg-1 offset-lg-1 col-lg-10   mt-xl-5 mr-xl-1 offset-xl-1 col-xl-10 ">
+                                    <br>
+                                    <label class="font-weight-lighter mt-lg-3 mt-xl-3">Create post</label>
+                                    <textarea class="form-control col-sm-12 col-md-12 col-lg-12 col-xl-12" rows="5" placeholder="What is on your mind, @ViewBag.User.FirstName?" id="posttext"></textarea>
+                                    <button type="button" value="Post" class="btn btn-primary btncreatepost col-sm-12 col-md-12 col-lg-12 col-xl-12" hidden>Post</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+      
+
+    <!----------------------------------------------------------------------------->
+    <!--------------Friends,Requests And Posts Body------------------------------------------------>
+    <div class="row col-sm-12 col-md-12 mt-md-1 col-lg-12 mt-lg-1 col-xl-12 mt-xl-1">
+        <!------------Friends And Requests----------------->
+        <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3 ">
+            <!------------------------------------------------------------------------------------->
+            <!----------------------------Friends List Section--------------------------------->
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 friendList">
+                <h5 class="d-block text-center mt-3">Friends</h5>
+                <div>
+                    <hr />
+                </div>
+                @if (ViewBag.Friends.Count > 0)
+                {
+                    @foreach (var item in @ViewBag.Friends)
+                    {
+                        @*<p hidden>@item.Id</p>*@
+                        <a friend-user-id ="@item.Id" href="/User/Profile/?ProfileID=@item.Id" class="d-block">@item.FirstName @item.LastName</a>
+
+                    }
+                }
+                else
+                {
+                    <h5> No Friends !!</h5>
+                }
+                <div class="mt-5 mb-3 d-block text-center">
+                    <button type="button" class="btn btn-info showAllFriends" data-user-id="@ViewBag.User.Id" data-toggle="modal" data-target="#ShowFriendsModal">All Friends</button>
+                </div>
+            </div>
+            <!----------------------------------------------------------------------------------------->
+            <!----------------------------Friend Requests List Section--------------------------------->
+            @{
+
+                if (ViewBag.UserIDSession == ViewBag.User.Id)
+                {
+                    <div class="mt-4 col-sm-12 col-md-12 col-lg-12 col-xl-12 requestList">
+                        <h5 class="d-block text-center mt-3">Friend Requests</h5>
+                        <div>
+                            <hr />
+                        </div>
+                        @if (ViewBag.FriendRequest.Count > 0)
+                        {
+                            @foreach (var item in @ViewBag.FriendRequest)
+                            {
+                                @*<p hidden>@item.Id</p>*@
+                                <a friendRequest-user-id ="@item.Id" href="/User/Profile/?ProfileID=@item.Id" class="d-block">@item.FirstName @item.LastName</a>
+                            }
+                        }
+                        else
+                        {
+                            <h5> No Requests !!</h5>
+                        }
+
+                        <div class="mt-5 mb-3 d-block text-center">
+                            <button type="button" class="btn btn-info showAllRequests" data-user-id="@ViewBag.User.Id" data-toggle="modal" data-target="#ShowRequestsModal">All Requests</button>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+
+        <!------------------------------------------------------------------------------------->
+        <!-----------------------------------Posts Section-------------------------------------->
+        <div class="PostsContainer container-fluid col-sm-12 mt-sm-4 col-md-12 mt-lg-0 offset-lg-1 col-lg-7 mr-lg-1 offset-xl-1 col-xl-7 mr-xl-1 p-0">
+            @foreach (var item in Model)
+            {
+
+                <div class="col-12 row m-auto container-fluid p-0 eachpost" post-id="@item.PostID">
+                    <div class="col-12 row m-auto   ">
+                        @if (item.User.ProfilePicture != null)
+                        {
+                            <img src="data:image/*;base64,@Convert.ToBase64String(item.User.ProfilePicture)" class="img-fluid rounded-circle col-2 mt-2 float-left" />
+                        }
+                        else
+                        {
+                            <img src="~/unknown.jpg" class="img-fluid rounded-circle col-2 mt-2 float-left" />
+
+                        }
+                        <div class="col-5 mt-1">
+                            <a href="/User/Profile/?ProfileID=@item.User_ID" class="col-12  name">@item.User.FirstName @item.User.LastName</a>
+                            <span class="PostDate col-12 d-block date">@item.PostDate.ToString("g")</span>
+                        </div>
+                        @if (ViewBag.UserIDSession != null)
+                        {
+                            @if (item.User_ID == ViewBag.UserIDSession)
+                            {
+                                <button data-user-id="@item.PostID" class="btn btn-primary jPostEdit edit_post  col-2" data-toggle="modal" data-target="#EditPostModal">
+                                    Edit
+                                </button>
+
+                                <button data-user-id="@item.PostID" class="btn btn-primary jDelete delete_post offset-1 col-2">
+                                    Delete
+                                </button>
+                            }
+                        }
+                    </div>
+                    <div class="col-12 mt-3 ml-1 row ml-auto mr-auto postBody">
+                        <h5 id="postText">@item.PostText</h5>
+                    </div>
+
+
+                    <div class="col-12 row m-auto ">
+                        <div class=" AllLikes col-6 mt-2">
+                            <button type="button" data-com="@item.Comments" data-user-id="@item.PostID" class="btn btn-primary btnviewlikes float-left" data-toggle="modal" data-target="#CreateModal2">
+                                All Likes
+                            </button>
+                        </div>
+
+                        <div class="AllComments offset-2 col-4 mt-2">
+                            <button type="button" data-user-id="@item.PostID" class="btn btn-dark btnviewcomments float-right" data-toggle="modal" data-target="#CreateModal">
+                                All Comments
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-12">
+                        <hr>
+                    </div>
+
+                    <div class="col-12 row m-auto">
+
+                        @*<button data-user-id="@item.PostID" class="btn btn-primary js-Like like_btn col-5">
+                                Like
+                            </button>*@
+
+                        @if (item.Likes?.Where(l => l.User_ID == ViewBag.UserIDSession).Any() == false)
+                        {
+                            <button data-user-id="@item.PostID" class="btn btn-light js-Like like_btn col-5">
+                                Like
+                            </button>
+                        }
+                        else
+                        {
+                            <button data-user-id="@item.PostID" class="btn btn-primary js-Like like_btn col-5">
+                                UnLike
+                            </button>
+                        }
+
+
+
+
+
+
+
+
+                        <button type="button" post-id="@item.PostID" class="btn btn-dark btnaddcomment comment_btn offset-2 col-5" data-toggle="modal" data-target=".AddCommentModal">
+                            Comment
+                        </button>
+
+                    </div>
+                    <div>
+                        <br>
+                    </div>
+
+
+                    <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">All Comments</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body com">
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal fade" id="CreateModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">All Likes</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body lik">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="EditPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body editmodalbody">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade AddCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add Comment</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body addcommentbody">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+        <!----------------------End Of Posts Body------------------------------------------------------------------->
+    </div>
+
+
+</body>
+</html>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/Profile.js"></script>
+

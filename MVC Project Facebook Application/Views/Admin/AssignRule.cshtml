@@ -1,0 +1,39 @@
+﻿
+@*<h2>Change Role</h2>*@
+    <form method="post" class="form-group" id="rolechangeformdata">
+        <div class="form-group">
+            <label>UserRole</label>
+            @Html.DropDownList("UserRoleModify", null, new { @class = "form-control" })
+        </div>
+        <input type="text" name="userid" value="@ViewBag.UserID" hidden />
+        <div class="modal-footer">
+            <input value="Submit" type="button" class="btn btn-primary" id="ChangeRolePost" />
+            <button type="button" class="btn btn-secondary changeRoleClose" data-dismiss="modal">Cancel</button>
+        </div>
+        @*<input value="Submit" type="button" class="btn btn-success" id="ChangeRolePost" />*@
+    </form>
+<script>
+    $(document).ready(function () {
+
+        $('#ChangeRolePost').on("click", function () {
+            var form_data = $('#rolechangeformdata').serialize();
+            var formData = form_data.split('&').toString().split('=').toString().split(',');
+            console.log(formData);
+            $.ajax({
+                url: '/Admin/AssignRule/?UserID=' + formData[3] + '&RoleName=' + formData[1],
+                method: "POST",
+                dataType: "json",
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: form_data,
+                success: function (response) {
+                    alert("Role Successfully Changed");
+                    $('.changeRoleClose').click();
+                },
+                error: () => alert("Something Wrong Happened !!"),
+            })
+
+        })
+
+
+    });
+</script>

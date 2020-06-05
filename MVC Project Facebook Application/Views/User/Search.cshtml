@@ -1,0 +1,69 @@
+﻿
+
+
+
+
+
+
+@{ 
+    Layout = "~/Views/Shared/layout.cshtml";
+}
+@model IEnumerable<MVC_Project_Facebook_Application.Models.SearchUserState>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a href=@Url.Action("Profile", "User", new { @ProfileID = item.UserID})>@item.FullName</a>
+                </td>
+                <td>
+                    @{
+                        switch (item.State)
+                        {
+                            case "isFriend":
+                                <button data-user-id=@item.UserID class="btn alert-danger js-RemoveFriend">UnFriend</button>
+                                @*@Html.ActionLink("UnFriend", "RemoveFriend", "User", new {FriendID = item.UserID}, new { @class="btn btn-light" +item.UserID})*@
+                                break;
+                            case "notFriend":
+                                if (item.UserID != ViewBag.UserIDSession)
+                                {
+                                    <button data-user-id=@item.UserID class="btn alert-primary js-AddFriend">Add Friend</button>
+                                }
+                                @*@Html.ActionLink("Add Friend", "AddFriend", "User", new {FriendID = item.UserID}, new { @class = "btn btn-light " + item.UserID })*@
+                                break;
+                            case "receivedFriendRequest":
+                                if (item.UserID != ViewBag.UserIDSession)
+                                {
+                                    <button data-user-id=@item.UserID class="btn alert-success js-AcceptRequest">Accept</button>
+                                    <hr />
+                                    <button data-user-id=@item.UserID class="btn alert-warning js-DeclineRequest">Decline</button>
+                                    @*@Html.ActionLink("Accept Request", "AcceptFriendRequest","User", new {FriendID = item.UserID}, new { @class="btn btn-light"})*@
+                                    @*@Html.ActionLink("Decline Request", "DeclineFriendRequest","User", new {FriendID = item.UserID}, new { @class="btn btn-light"})*@
+                                }
+                                break;
+                            case "sentFriendRequest":
+                                if (item.UserID != ViewBag.UserIDSession)
+                                {
+                                    <button data-user-id=@item.UserID class="btn alert-secondary js-DeleteRequest">Delete Request</button>
+                                }
+                                @*@Html.ActionLink("Delete Request", "DeleteFriendRequest","User", new {FriendID = item.UserID}, new { @class="btn btn-light"})*@
+                                break;
+
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/UserSearch.js"></script>

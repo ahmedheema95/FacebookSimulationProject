@@ -1,0 +1,62 @@
+﻿/*body{
+            background-color:green;
+        }*/
+/*.PostsContainer {
+            border-style: solid;
+        }*/
+.eachpost {
+    border-style: solid;
+    border-top-width: 8px;
+    border-bottom-width: 8px;
+    border-color: #DCDCDC;
+}
+
+.requestList {
+    border-style: solid;
+    border-width: 4px;
+    border-color: #DCDCDC;
+}
+
+.friendList {
+    border-style: solid;
+    border-width: 4px;
+    border-color: #DCDCDC;
+}
+
+.qqq {
+    background-color: rebeccapurple;
+}
+
+.name {
+    margin-left: -15%;
+}
+
+.date {
+    margin-left: -14%;
+}
+
+.AllLikes {
+    margin-left: -2%;
+}
+
+/*.like_btn {
+            position: relative;
+            left: 15px;
+        }
+
+        .comment_btn {
+            position: relative;
+            left: 345px;
+        }*/
+
+.delete_post {
+    margin-top: 3px;
+    height: 70%;
+}
+
+.edit_post {
+    position: relative;
+    left: 35px;
+    margin-top: 3px;
+    height: 70%;
+}

@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "Viewalllik";
+}
+@model IEnumerable<MVC_Project_Facebook_Application.Core.Domain.Like>
+ 
+<table class="table">
+    <thead>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <h4><a href="/User/Profile/?ProfileID=@item.User.Id">@item.User.FirstName @item.User.LastName</a></h4>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

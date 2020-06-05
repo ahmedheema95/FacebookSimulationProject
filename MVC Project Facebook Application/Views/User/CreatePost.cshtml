@@ -1,0 +1,144 @@
+﻿@model MVC_Project_Facebook_Application.Core.Domain.Post
+
+
+<div class="col-12 row m-auto container-fluid p-0 eachpost" post-id="@Model.PostID">
+    <div class="col-12 row m-auto   ">
+        @if (Model.User.ProfilePicture != null)
+        {
+            <img src="data:image/*;base64,@Convert.ToBase64String(Model.User.ProfilePicture)" class="img-fluid rounded-circle col-2 mt-2 float-left" />
+        }
+        else
+        {
+            <img src="~/unknown.jpg" class="img-fluid rounded-circle col-2 mt-2 float-left" />
+
+        }
+        <div class="col-5 mt-1">
+            <a href="/User/Profile/?ProfileID=@Model.User_ID" class="col-12  name">@Model.User.FirstName @Model.User.LastName</a>
+            <span class="PostDate col-12 d-block date">@Model.PostDate.ToString("g")</span>
+        </div>
+        @if (ViewBag.UserIDSession != null)
+        {
+            @if (Model.User_ID == ViewBag.UserIDSession)
+            {
+                <button data-user-id="@Model.PostID" class="btn btn-primary jPostEdit edit_post  col-2" data-toggle="modal" data-target="#EditPostModal">
+                    Edit
+                </button>
+
+                <button data-user-id="@Model.PostID" class="btn btn-primary jDelete delete_post offset-1 col-2">
+                    Delete
+                </button>
+            }
+        }
+    </div>
+    <div class="col-12 mt-3 ml-1 row ml-auto mr-auto postBody">
+        <h5 id="postText">@Model.PostText</h5>
+    </div>
+
+
+    <div class="col-12 row m-auto ">
+        <div class=" AllLikes col-6 mt-2">
+            <button type="button" data-com="@Model.Comments" data-user-id="@Model.PostID" class="btn btn-primary btnviewlikes float-left" data-toggle="modal" data-target="#CreateModal2">
+                All Likes
+            </button>
+        </div>
+
+        <div class="AllComments offset-2 col-4 mt-2">
+            <button type="button" data-user-id="@Model.PostID" class="btn btn-dark btnviewcomments float-right" data-toggle="modal" data-target="#CreateModal">
+                All Comments
+            </button>
+        </div>
+
+    </div>
+
+
+    <div class="col-12">
+        <hr>
+    </div>
+
+    <div class="col-12 row m-auto">
+
+        <button data-user-id="@Model.PostID" class="btn btn-light js-Like like_btn col-5">
+            Like
+        </button>
+
+
+        <button type="button" post-id="@Model.PostID" class="btn btn-dark btnaddcomment comment_btn offset-2 col-5" data-toggle="modal" data-target=".AddCommentModal">
+            Comment
+        </button>
+
+    </div>
+    <div>
+        <br>
+    </div>
+
+
+    <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">All Comments</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body com">
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="CreateModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">All Likes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body lik">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="EditPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body editmodalbody">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade AddCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Comment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body addcommentbody">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<MVC_Project_Facebook_Application.Core.Domain.MyUser>
+
+<table class="table">
+    <thead>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <h4><a href="@item.Id">@item.FirstName @item.LastName</a></h4>
+                </td>
+                <td>
+                    @if (ViewBag.State)
+                    {
+                        <button data-user-id=@item.Id class="btn alert-danger RemoveFriend">UnFriend</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $('document').ready(function () {
+            $(".RemoveFriend").on("click", function () {
+            var button = $(this);
+            console.log("button clicked")
+            if (confirm("Are you Sure You want to Remove this Friend")) {
+                $.ajax({
+                    url: "/User/RemoveFriend/?FriendID=" + button.attr("data-user-id"),
+                    method: "post",
+                    success: function (response) {
+                        if (response == "FriendRemoved") {
+                            //console.log(response);
+                            //alert("Friend Successfully Removed");
+                            button.parent('td').parent('tr').remove();
+                            $('[friend-user-id="' + button.attr("data-user-id") + '"]').remove();
+                        }
+                        else
+                            alert("Friend Not Removed");
+                    },
+                    error: () => alert("Sorry An Error Occurred!!"),
+                })
+            }
+        })
+
+
+    });
+</script>

@@ -1,0 +1,70 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<MVC_Project_Facebook_Application.Core.Domain.Comment>
+
+<h6>Post:</h6>
+<h4>
+    @ViewBag.TargetPostText
+</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CommentText)
+            </th>
+            <th>
+                Name
+            </th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CommentText)
+                </td>
+                <td>
+                    <h5><a href="/User/Profile/?ProfileID=@item.User.Id">@item.User.FirstName @item.User.LastName</a></h5>
+                </td>
+                @{
+                    if (item.Post.User_ID == @ViewBag.UserIDSession || item.User_ID == @ViewBag.UserIDSession)
+                    {
+                        <td>
+                            <button post-id=@item.Post_ID comment-id=@item.CommentID class="btn alert-danger js-DeleteComment">Delete Comment</button>
+                            @*@Html.ActionLink("Delete", "DeleteComment", "User", new { postID = item.Post_ID, commentID = item.CommentID })*@
+                        </td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        $('table').on("click", "button.js-DeleteComment", function () {
+            var button = $(this);
+            //console.log("button clicked")
+            if (confirm("Are you Sure You want to Remove this Comment")) {
+                $.ajax({
+                    url: "/User/DeleteComment/?postID=" + button.attr("post-id") + "&commentID=" + button.attr("comment-id"),
+                    method: "post",
+                    success: function (response) {
+                        if (response == "CommentRemoved") {
+                            //alert("Comment Successfully Removed");
+                            button.parent('td').parent('tr').remove();
+                        }
+                        else
+                            alert("Comment Not Removed");
+                    },
+                    error: () => alert("Sorry An Error Occurred!!"),
+                })
+            }
+        })
+
+    });
+</script>

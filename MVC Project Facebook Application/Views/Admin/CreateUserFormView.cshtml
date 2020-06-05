@@ -1,0 +1,58 @@
+﻿@model MVC_Project_Facebook_Application.Models.RegisterViewModel
+
+    <form id="userform" method="post">
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="@Model.FirstName"></label>
+            <input asp-for="@Model.FirstName" class="form-control formInput fnameInput" />
+            <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.LastName"></label>
+            <input asp-for="@Model.LastName" class="form-control formInput lnameInput" />
+            <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Age"></label>
+            <input asp-for="@Model.Age" class="form-control formInput ageInput" />
+            <span asp-validation-for="@Model.Age" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Email"></label>
+            <input asp-for="@Model.Email" class="form-control formInput emailInput" />
+            <span asp-validation-for="@Model.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Country"></label>
+            <input asp-for="@Model.Country" class="form-control formInput countryInput" />
+            <span asp-validation-for="@Model.Country" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Password"></label>
+            <input asp-for="@Model.Password" class="form-control formInput passwordInput" />
+            <span asp-validation-for="@Model.Password" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.ConfirmPassword"></label>
+            <input asp-for="@Model.ConfirmPassword" class="form-control formInput confirmPassInput" />
+            <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+        </div>
+        @*<div>
+            <label asp-for="@Model.UserRole"></label>
+            <select asp-for="@Model.UserRole" class="form-control" id="menuUserRoles">
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
+            </select>
+            <span asp-validation-for="@Model.UserRole" class="text-danger"></span>
+        </div>*@
+        <div class="form-group">
+            <label>UserRole</label>
+            @Html.DropDownList("UserRole", null, new { @class = "form-control" })
+        </div>
+        <div class="modal-footer">
+            <input id="btnsubmit" type="button" value="Submit" class="btn btn-primary" />
+            <button type="button" class="btn btn-secondary createUserClose" data-dismiss="modal">Close</button>
+        </div>
+    </form>
+

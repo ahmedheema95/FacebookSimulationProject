@@ -1,0 +1,61 @@
+﻿@model MVC_Project_Facebook_Application.Core.Domain.MyRole
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+
+@*<h2>Create Role</h2>*@
+    <form method="post" class="form-group" id="roleformdata">
+        <div class="form-group">
+            <label>Role Name</label>
+            <input asp-for="@Model.Name" type="text" class="form-control role-input r-name" />
+        </div>
+        <div class="form-group">
+            <label>Role Description</label>
+            <input asp-for="@Model.Description" type="text" class="form-control role-input r-describtion" />
+        </div>
+        <div class="modal-footer">
+            <input value="Submit" type="button" class="btn btn-primary" id="SubmitRolePost" />
+            <button type="button" class="btn btn-secondary addRoleClose" data-dismiss="modal">Cancel</button>
+        </div>
+        
+    </form>
+<script>
+    $(document).ready(function () {
+
+        $('#SubmitRolePost').on("click", function () {
+            var form_data = $('#roleformdata').serialize();
+            //alert(form_data)
+            $.ajax({
+                url: '/Admin/CreateRole/',
+                method: "POST",
+                dataType: "json",
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: form_data,
+                success: function (response) {
+                    if (response == "RoleCreated") {
+                        alert("Role Successfully Created");
+                        $('.addRoleClose').click();
+                    }          
+                    else
+                        alert("Role Already Exists!!");
+                },
+                error: () => alert("Something Wrong Happened !!"),
+            })
+
+        })
+
+        $("#SubmitRolePost").attr("disabled", true);
+
+        $('.role-input').keyup(function () {
+            if ($('.r-name').val().length != 0 && $('.r-describtion').val().length != 0)
+                $("#SubmitRolePost").removeAttr("disabled");
+            else
+                $("#SubmitRolePost").attr("disabled", true);
+        })
+
+
+
+    });
+</script>

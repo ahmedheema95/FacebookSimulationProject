@@ -1,0 +1,56 @@
+﻿@model MVC_Project_Facebook_Application.Core.Domain.Comment
+
+        <h5>
+            @ViewBag.TargetPostText
+        </h5>
+        <form id="CommentContent" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Post_ID" value="@ViewBag.TargetPostID" hidden />
+            <div class="form-group">
+                <label asp-for="CommentText" class="control-label"></label>
+                <input asp-for="CommentText" class="form-control commentText"  />
+                <span asp-validation-for="CommentText" class="text-danger"></span>
+            </div>
+            <input asp-for="User_ID" class="form-control" value="@ViewBag.userIDSession" hidden />
+            <div class="modal-footer">
+                <input type="button" value="Add Comment" class="btn btn-primary" id="commentSubmit" />
+                <button type="button" class="btn btn-secondary btn-Commentclose" data-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+
+<script>
+    $(document).ready(function () {
+        $('#commentSubmit').on("click", function () {
+            var submitdata = $('#CommentContent').serialize();
+            //alert(submitdata)
+            $.ajax({
+                url: "/User/AddComment",
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: submitdata,
+                success: function (response) {
+                    if (response == "CommentAdded") {
+                        //alert("Comment Successfully Added");
+                        $('.btn-Commentclose').click();
+                    }
+                    else
+                        alert("Comment Not Added")
+                },
+                error: () => alert("Sorry An Error Happens!!"),
+            })
+        })
+
+        $('#commentSubmit').attr('disabled', true);
+
+        $('.commentText').keyup(function () {
+            //console.log("1")
+            if ($('.commentText').val().length != 0)
+                $('#commentSubmit').removeAttr('disabled');
+            else
+                $('#commentSubmit').attr('disabled', true);
+        })
+
+    });
+
+</script>

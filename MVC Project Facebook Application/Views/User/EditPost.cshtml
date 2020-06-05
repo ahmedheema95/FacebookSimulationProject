@@ -1,0 +1,61 @@
+﻿
+@model MVC_Project_Facebook_Application.Core.Domain.Post
+
+    <form id="editForm" method="post">
+        <div class="form-group">
+            <label asp-for="PostText" class="control-label"></label>
+            <textarea asp-for="PostText" class="form-control postTextedit" rows="3"></textarea>
+            @*<input asp-for="PostText" class="form-control postTextedit" />*@
+            <span asp-validation-for="PostText" class="text-danger"></span>
+        </div>
+        <input asp-for="@Model.User_ID" class="form-control" hidden />
+        <input asp-for="@Model.PostID" class="form-control" hidden />
+        <input asp-for="@Model.PostDate" class="form-control" hidden />
+
+        <div class="modal-footer">
+            <input type="button" value="Edit" class="btn btn-primary editSubmit" />
+            <button type="button" class="btn btn-secondary btn-Editclose" data-dismiss="modal">Cancel</button>
+        </div>
+
+    </form>
+<script>
+    $(document).ready(function () {
+        $('.editSubmit').on("click", function () {
+            var editData = $('#editForm').serialize();
+            var dataview = editData.split('&').toString().split('=').toString().split(',');
+            //console.log(dataview)
+            $.ajax({
+                url: '/User/EditPost/',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: editData,
+                success: function (response) {
+                    if (response == "Edited") {
+                        //alert('Post Updated Sucessfully');
+                        //console.log(dataview[1].replace(/%20/g," "));
+                        //console.log($('[post-id=' + parseInt(dataview[5]) + ']'))
+                        $('[post-id=' + parseInt(dataview[5]) + ']').children('.postBody').children('#postText').text(dataview[1].replace(/%20/g, " ").toString());
+                        $('.btn-Editclose').click();
+                    }
+                    else
+                        alert("Session Ended Please Login Again !!!");
+                },
+                error: () => alert('Sorry An Error Happens'),
+            })
+        })
+
+        $('.editSubmit').attr("disabled", true);
+
+        $('.postTextedit').keyup(function () {
+            //console.log(11);
+            if ($('.postTextedit').val().length != 0)
+                $('.editSubmit').removeAttr("disabled");
+            else
+                $('.editSubmit').attr("disabled", true);
+        })
+
+
+
+    });
+</script>

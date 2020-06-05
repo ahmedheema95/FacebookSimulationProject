@@ -1,0 +1,84 @@
+﻿@model IEnumerable<MVC_Project_Facebook_Application.Core.Domain.MyUser>
+
+<table class="table">
+    <thead>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <h4><a href="/User/Profile/?ProfileID=@item.Id">@item.FirstName @item.LastName</a></h4>
+                </td>
+                <td>
+                    @if (ViewBag.State)
+                    {
+                        <button @*friendRequest-fname="@item.FirstName" friendRequest-lname="@item.LastName"*@ data-user-id=@item.Id class="btn alert-success AcceptRequest">Accept</button>
+                        <hr />
+                        <button data-user-id=@item.Id class="btn alert-warning DeclineRequest">Decline</button>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $('document').ready(function () {
+        $(".AcceptRequest").on("click", function() {
+            var button = $(this);
+            //console.log("button clicked")
+            if (confirm("Are you Sure You want to Accept this Friend Request")) {
+                $.ajax({
+                    url: "/User/AcceptFriendRequest/?FriendID=" + button.attr("data-user-id"),
+                    method: "post",
+                    success: function (response) {
+                        //console.log(response);
+                        if (response == "RequestAccepted") {
+                            //alert("You Are Now Friends");
+                            button.parent('td').parent('tr').remove();
+                            //console.log($('.friendList'))
+                            //$('.friendList').
+                            //    append('<a friendRequest-user-id =' + button.attr("data-user-id") +
+                            //        ' href="/User/Profile/?ProfileID=' + button.attr("data-user-id") +
+                            //        'class="d-block">' +
+                            //        button.attr("friendRequest-fname") +
+                            //        " " +
+                            //        button.attr("friendRequest-lname") +
+                            //        '</a>');
+                            $('[friendRequest-user-id="' + button.attr("data-user-id") + '"]').remove();
+                        }
+                        else
+                            alert("FriendRequest Not Accepted");
+
+                    },
+                    error: () => alert('Sorry An Error Occurred!!'),
+                })
+            }
+        })
+
+        $(".DeclineRequest").on("click", function () {
+            var button = $(this);
+            //console.log("button clicked")
+            if (confirm("Are you Sure You want to Decline this Friend Request")) {
+                $.ajax({
+                    url: "/User/DeclineFriendRequest/?FriendID=" + button.attr("data-user-id"),
+                    method: "post",
+                    success: function (response) {
+                        //console.log(response);
+                        if (response == "RequestDeclined") {
+                            //alert("Friend Request Declined");
+                            button.parent('td').parent('tr').remove();
+                            $('[friendRequest-user-id="' + button.attr("data-user-id") + '"]').remove();
+                        }
+                        else
+                            alert("Request Not Declined");
+
+                    },
+                    error: () => alert('Sorry An Error Occurred!!'),
+                })
+            }
+        })
+
+    });
+</script>
